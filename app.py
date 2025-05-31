@@ -42,17 +42,23 @@ packages = {
     ]
 }
 
-# Streamlit UI setup
 st.set_page_config(page_title="PDF Checklist Tool", layout="centered")
 st.title("🧪 PDF + Test Checklist Merger")
 st.markdown("📄 Please upload a test report PDF to begin.")
 
-# Upload the original PDF
 uploaded_pdf = st.file_uploader("Upload Test Report PDF", type="pdf")
 
 if uploaded_pdf:
     selected_package = st.selectbox("Choose a Package", list(packages.keys()))
-    selected_tests = st.multiselect("Select Tests", packages[selected_package])
+    tests_list = packages[selected_package]
+
+    st.markdown("### ✅ Select Tests")
+    select_all = st.checkbox("Select all tests")
+
+    if select_all:
+        selected_tests = st.multiselect("Choose from below", tests_list, default=tests_list)
+    else:
+        selected_tests = st.multiselect("Choose from below", tests_list)
 
     if st.button("Generate Final PDF"):
         # Save uploaded PDF temporarily
@@ -66,26 +72,23 @@ if uploaded_pdf:
         checklist.set_font("Arial", "B", 14)
         checklist.cell(0, 10, f"Package Name - {selected_package}", ln=True)
 
-        # Table headers
-        checklist.set_fill_color(173, 216, 230)  # Light blue
+        checklist.set_fill_color(173, 216, 230)
         checklist.set_font("Arial", "B", 12)
         checklist.cell(95, 10, selected_package, border=1, fill=True)
         checklist.cell(95, 10, "Status", border=1, fill=True)
         checklist.ln()
 
-        # Table content
         checklist.set_font("Arial", "", 12)
-        for test in packages[selected_package]:
+        for test in tests_list:
             checklist.cell(95, 10, test, border=1)
-            checkbox = "Done" if test in selected_tests else "Pending"
-            checklist.cell(95, 10, checkbox, border=1)
+            status = "Done" if test in selected_tests else "Pending"
+            checklist.cell(95, 10, status, border=1)
             checklist.ln()
 
-        # Save checklist PDF
         checklist_path = tempfile.NamedTemporaryFile(delete=False, suffix=".pdf").name
         checklist.output(checklist_path)
 
-        # Merge original PDF with checklist
+        # Merge with original PDF
         pdf_writer = PdfWriter()
         pdf_reader = PdfReader(temp_input.name)
         for page in pdf_reader.pages:
@@ -95,12 +98,10 @@ if uploaded_pdf:
         for page in checklist_reader.pages:
             pdf_writer.add_page(page)
 
-        # Save final merged PDF
         final_path = tempfile.NamedTemporaryFile(delete=False, suffix=".pdf").name
         with open(final_path, "wb") as f:
             pdf_writer.write(f)
 
-        # Show download button
         with open(final_path, "rb") as f:
             st.download_button("📥 Download Final PDF", f, file_name="final_report_with_checklist.pdf")
 
