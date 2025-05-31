@@ -13,7 +13,7 @@ packages = {
         "Kidney (2 Tests)",
         "Liver (1 Tests)",
         "ECG",
-        "X-ray Chest",
+        "X-ray Chest(film)",
         "Fitness Summary By Medical Officer"
     ],
     "RCLT Pre-employment Package 13": [
@@ -25,7 +25,7 @@ packages = {
         "Liver (1 Tests)",
         "Lipid Profile (9 Tests)",
         "ECG",
-        "X-ray Chest",
+        "X-ray Chest(film)",
         "Fitness Summary By Medical Officer"
     ],
     "RCLT Pre-employment Package 14": [
@@ -37,7 +37,7 @@ packages = {
         "Liver (1 Tests)",
         "Lipid Profile (9 Tests)",
         "ECG",
-        "X-ray Chest",
+        "X-ray Chest(film)",
         "Fitness Summary By Medical Officer"
     ]
 }
